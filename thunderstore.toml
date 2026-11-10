@@ -8,8 +8,8 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "MortemDevelopment"
 name = "MortemChipX"
-versionNumber = "0.1.0" # keep in step with "version" in MortemChipX.json
-description = "Adds 9 new Jokers to Balatro that multiply your Chips."
+versionNumber = "0.2.0" # keep in step with "version" in MortemChipX.json
+description = "Adds 10 new Jokers to Balatro that multiply your Chips."
 websiteUrl = "https://github.com/MrMortem/MortemChipX"
 containsNsfwContent = false
 

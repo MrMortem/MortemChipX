@@ -26,6 +26,8 @@ SMODS = {
     scale_card = function(_, a) a.ref_table[a.ref_value] = a.ref_table[a.ref_value] + a.ref_table[a.scalar_value] end,
 }
 function pseudorandom_element(t) return t[1] end
+local next_roll
+function pseudorandom(_, min, max) return next_roll(min, max) end
 function localize(a) return type(a) == "table" and a.key or a end
 
 assert(loadfile("MortemChipX.lua"))()
@@ -57,13 +59,13 @@ local function cards(...)
 end
 local END_WIN = { end_of_round = true, main_eval = true, game_over = false }
 
-do -- all nine are registered with the handoff's keys, rarity, cost and cell
+do -- all ten are registered with the handoff's keys, rarity, cost and cell
     local want = {
         double_dip = { 1, 5, 0, 0 }, compound_interest = { 2, 6, 1, 0 },
         wood_chipper = { 3, 8, 2, 0 }, stack_overflow = { 2, 7, 3, 0 },
         cracked_piggy_bank = { 1, 5, 0, 1 }, bargaining_chip = { 3, 8, 1, 1 },
         domino_effect = { 2, 6, 2, 1 }, all_in = { 3, 9, 3, 1 },
-        pascals_wager = { 4, 20, 0, 2 },
+        pascals_wager = { 4, 20, 0, 2 }, unstable_chipset = { 2, 6, 1, 2 },
     }
     for key, w in pairs(want) do
         local def = jokers[key]
@@ -210,6 +212,17 @@ do -- Pascal's Wager
     check("wager played ace", calc({ individual = true, cardarea = G.play, other_card = ace }), nil)
     check("wager end of round pass", calc({ individual = true, cardarea = G.hand, other_card = ace, end_of_round = true }), nil)
     check("wager no main multiplier", calc({ joker_main = true }), nil)
+end
+
+do -- Unstable Chipset
+    local _, calc = new("unstable_chipset")
+    next_roll = function(min) return min end
+    check("chipset lowest roll", xchips(calc({ joker_main = true })), 0.5)
+    next_roll = function(_, max) return max end
+    check("chipset highest roll", xchips(calc({ joker_main = true })), 3)
+    next_roll = function() return 17 end
+    check("chipset mid roll", xchips(calc({ joker_main = true })), 1.7)
+    check("chipset only in main scoring", calc({ after = true }), nil)
 end
 
 do -- every Joker has a name and description

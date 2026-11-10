@@ -1,9 +1,9 @@
--- MortemChipX: 9 Jokers that multiply Chips.
+-- MortemChipX: 10 Jokers that multiply Chips.
 -- Entry point: registers the shared Joker atlas, then loads one file per Joker.
 
 -- One sheet for every Joker in the mod: 4 columns x 3 rows of 71x95 cells
 -- (assets/1x/chip_jokers.png is 284x285, assets/2x/chip_jokers.png is 568x570).
--- The last three cells of the bottom row are empty.
+-- The last two cells of the bottom row are empty.
 -- A Joker picks its cell with `pos = { x = column, y = row }`, both 0-based.
 SMODS.Atlas({
     key = "chip_jokers",
@@ -33,6 +33,7 @@ local JOKERS = {
     "domino_effect",
     "all_in",
     "pascals_wager",
+    "unstable_chipset",
 }
 
 for _, name in ipairs(JOKERS) do

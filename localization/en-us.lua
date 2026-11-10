@@ -77,6 +77,14 @@ return {
                     "gives {X:chips,C:white}X#1#{} Chips",
                 },
             },
+            j_mcx_unstable_chipset = {
+                name = "Unstable Chipset",
+                text = {
+                    "{X:chips,C:white}X#1#{} to {X:chips,C:white}X#2#{} Chips,",
+                    "chosen at random",
+                    "each hand",
+                },
+            },
         },
     },
     misc = {

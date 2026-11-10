@@ -2,6 +2,8 @@
 
 A Balatro mod that adds 9 new Jokers that multiply your Chips.
 
+![The nine Jokers](https://raw.githubusercontent.com/MrMortem/MortemChipX/main/assets/2x/chip_jokers.png)
+
 ## Jokers
 
 | Joker | Rarity | Cost | Effect |
@@ -32,29 +34,36 @@ Requires [Steamodded](https://thunderstore.io/c/balatro/p/Steamodded/Steamodded/
 ```
 MortemChipX.lua        entry point: atlas + list of Jokers to load
 MortemChipX.json       Steamodded metadata
-manifest.json          Thunderstore metadata
+thunderstore.toml      Thunderstore package definition
 icon.png               Thunderstore icon (256x256)
 src/jokers/            one file per Joker
 localization/en-us.lua Joker names and descriptions
 assets/1x, assets/2x   Joker sheet, 4x3 cells of 71x95 (2x: 142x190)
 tests/test_jokers.lua  Joker rule tests against a stubbed game API
+scripts/stage.sh       gathers the shipped files into dist/
 ```
 
 To add a Joker: add a file in `src/jokers/`, list it in `MortemChipX.lua`,
 add its text under `j_mcx_<key>` in `localization/en-us.lua`, and draw it into
 a cell of both sheets.
 
-Run the rule tests with `luajit tests/test_jokers.lua`.
-
-To test locally, symlink the repo into the Balatro `Mods` folder.
+Run the rule tests with `luajit tests/test_jokers.lua`. To test in game,
+symlink the repo into the Balatro `Mods` folder.
 
 ### Releasing
 
-1. Set the same version in `manifest.json` (`version_number`) and
-   `MortemChipX.json` (`version`).
+1. Set the same version in `thunderstore.toml` (`versionNumber`) and
+   `MortemChipX.json` (`version`), and add a `## <version>` section to
+   `CHANGELOG.md`.
 2. Tag and push: `git tag v0.1.0 && git push origin v0.1.0`.
-3. The Release workflow builds `MortemChipX-<version>.zip` and attaches it to
-   a GitHub release. Upload that zip to Thunderstore.
+3. The Release workflow builds the package with
+   [tcli](https://github.com/thunderstore-io/thunderstore-cli), attaches the
+   zip to a GitHub release, and publishes it to Thunderstore.
+
+Publishing to Thunderstore needs a `THUNDERSTORE_TOKEN` repository secret
+holding a service account token for the MortemDevelopment team. Without it
+the workflow still makes the GitHub release, and the zip can be uploaded by
+hand. Tags with a suffix, such as `v0.2.0-rc1`, are never sent to Thunderstore.
 
 ## License
 

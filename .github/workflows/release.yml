@@ -9,23 +9,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check the tag matches the manifest
+      - name: Check the tag matches the package version
         run: |
           version="${GITHUB_REF_NAME#v}"
-          test "$(jq -r .version_number manifest.json)" = "${version%%-*}"
+          test "$(sed -n 's/^versionNumber = "\([^"]*\)".*/\1/p' thunderstore.toml)" = "${version%%-*}"
           test "$(jq -r .version MortemChipX.json)" = "$version"
-      - name: Package
+      - name: Build the Thunderstore package
         run: |
-          version="${GITHUB_REF_NAME#v}"
-          mkdir dist
-          cp -R manifest.json MortemChipX.json MortemChipX.lua README.md LICENSE icon.png src assets localization dist/
-          (cd dist && zip -r "../MortemChipX-$version.zip" .)
-      - name: Publish
+          dotnet tool install -g tcli
+          scripts/stage.sh
+          tcli build
+      - name: Create the GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           version="${GITHUB_REF_NAME#v}"
           flag=""
           case "$GITHUB_REF_NAME" in *-*|v0.0*) flag="--prerelease" ;; esac
-          gh release create "$GITHUB_REF_NAME" "MortemChipX-$version.zip" \
+          gh release create "$GITHUB_REF_NAME" build/*.zip \
             --target "$GITHUB_SHA" --title "MortemChipX $version" --generate-notes $flag
+      # Runs only for full releases (no "-" suffix in the tag) and only once
+      # the THUNDERSTORE_TOKEN repository secret exists.
+      - name: Publish to Thunderstore
+        env:
+          TCLI_AUTH_TOKEN: ${{ secrets.THUNDERSTORE_TOKEN }}
+        run: |
+          case "$GITHUB_REF_NAME" in *-*) echo "Pre-release tag: not publishing to Thunderstore."; exit 0 ;; esac
+          if [ -z "$TCLI_AUTH_TOKEN" ]; then
+            echo "::warning::THUNDERSTORE_TOKEN is not set; upload the zip from the GitHub release by hand."
+            exit 0
+          fi
+          tcli publish --file "$(ls build/*.zip)"

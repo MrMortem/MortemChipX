@@ -1,0 +1,34 @@
+# Thunderstore package definition, read by tcli (thunderstore-cli).
+# `tcli build` turns this plus the staged files in dist/ into the upload zip
+# and generates the package's manifest.json from the [package] section.
+
+[config]
+schemaVersion = "0.0.1"
+
+[package]
+namespace = "MortemDevelopment"
+name = "MortemChipX"
+versionNumber = "0.1.0" # keep in step with "version" in MortemChipX.json
+description = "Adds 9 new Jokers to Balatro that multiply your Chips."
+websiteUrl = "https://github.com/MrMortem/MortemChipX"
+containsNsfwContent = false
+
+[package.dependencies]
+Steamodded-Steamodded = "26.1002.0"
+
+[build]
+icon = "./icon.png"
+readme = "./README.md"
+outdir = "./build"
+
+# scripts/stage.sh fills dist/ with exactly the files the mod needs at runtime.
+[[build.copy]]
+source = "./dist"
+target = ""
+
+[publish]
+repository = "https://thunderstore.io"
+communities = ["balatro"]
+
+[publish.categories]
+balatro = ["content-mod", "ai-generated"]

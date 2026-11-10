@@ -1,22 +1,20 @@
 # MortemChipX
 
-A Balatro mod that adds 8 new Jokers that multiply your Chips.
-
-> Work in progress. The Jokers are still being designed; the mod currently
-> ships one placeholder Joker and placeholder art.
+A Balatro mod that adds 9 new Jokers that multiply your Chips.
 
 ## Jokers
 
-| # | Name | Rarity | Effect |
-|---|------|--------|--------|
-| 1 | TBD | | |
-| 2 | TBD | | |
-| 3 | TBD | | |
-| 4 | TBD | | |
-| 5 | TBD | | |
-| 6 | TBD | | |
-| 7 | TBD | | |
-| 8 | TBD | | |
+| Joker | Rarity | Cost | Effect |
+|---|---|---:|---|
+| Double Dip | Common | $5 | X2 Chips if the played hand contains exactly 2 scoring cards. |
+| Compound Interest | Uncommon | $6 | Starts at X1 Chips. Gains X0.15 each time a round is won without using a discard. |
+| Wood Chipper | Rare | $8 | Starts at X1 Chips. When a Boss Blind is defeated, destroys a random card held in hand and gains X0.25. |
+| Stack Overflow | Uncommon | $7 | X3 Chips if the hand has at least 500 Chips when this Joker triggers. |
+| Cracked Piggy Bank | Common | $5 | X4 Chips, loses X0.5 per hand played. Destroyed at X1. |
+| Bargaining Chip | Rare | $8 | X3 Chips, -2 hand size. |
+| Domino Effect | Uncommon | $6 | Each scoring card gives X1.15 Chips if its rank is exactly one higher than the scoring card to its left. |
+| All In | Rare | $9 | X5 Chips on the final hand of the round, X0.75 Chips otherwise. |
+| Pascal's Wager | Legendary | $20 | Each Ace held in hand gives X2 Chips. |
 
 ## Installation
 
@@ -38,11 +36,15 @@ manifest.json          Thunderstore metadata
 icon.png               Thunderstore icon (256x256)
 src/jokers/            one file per Joker
 localization/en-us.lua Joker names and descriptions
-assets/1x, assets/2x   Joker sheet, 4x2 cells of 71x95 (2x: 142x190)
+assets/1x, assets/2x   Joker sheet, 4x3 cells of 71x95 (2x: 142x190)
+tests/test_jokers.lua  Joker rule tests against a stubbed game API
 ```
 
-To add a Joker, follow the checklist at the top of
-[src/jokers/example.lua](src/jokers/example.lua).
+To add a Joker: add a file in `src/jokers/`, list it in `MortemChipX.lua`,
+add its text under `j_mcx_<key>` in `localization/en-us.lua`, and draw it into
+a cell of both sheets.
+
+Run the rule tests with `luajit tests/test_jokers.lua`.
 
 To test locally, symlink the repo into the Balatro `Mods` folder.
 

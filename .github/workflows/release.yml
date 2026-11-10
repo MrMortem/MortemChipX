@@ -1,0 +1,31 @@
+name: Release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the tag matches the manifest
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          test "$(jq -r .version_number manifest.json)" = "${version%%-*}"
+          test "$(jq -r .version MortemChipX.json)" = "$version"
+      - name: Package
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          mkdir dist
+          cp -R manifest.json MortemChipX.json MortemChipX.lua README.md LICENSE icon.png src assets localization dist/
+          (cd dist && zip -r "../MortemChipX-$version.zip" .)
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          flag=""
+          case "$GITHUB_REF_NAME" in *-*|v0.0*) flag="--prerelease" ;; esac
+          gh release create "$GITHUB_REF_NAME" "MortemChipX-$version.zip" \
+            --target "$GITHUB_SHA" --title "MortemChipX $version" --generate-notes $flag

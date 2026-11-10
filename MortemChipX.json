@@ -1,0 +1,17 @@
+{
+  "id": "MortemChipX",
+  "name": "MortemChipX",
+  "display_name": "MortemChipX",
+  "author": [
+    "MrMortem"
+  ],
+  "description": "Adds 8 new Jokers that multiply your Chips.",
+  "prefix": "mcx",
+  "main_file": "MortemChipX.lua",
+  "badge_colour": "009DFF",
+  "badge_text_colour": "FFFFFF",
+  "version": "0.1.0",
+  "dependencies": [
+    "Steamodded (>=1.0.0~BETA-1814a)"
+  ]
+}

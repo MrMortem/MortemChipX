@@ -16,8 +16,30 @@ jobs:
           done
       - name: Joker rules
         run: luajit tests/test_jokers.lua
-      - name: Metadata
+      - name: Versions agree
         run: |
-          jq -e . manifest.json MortemChipX.json > /dev/null
-          test "$(jq -r .version_number manifest.json)" = "$(jq -r .version MortemChipX.json)"
-          test "$(file -b icon.png | cut -d, -f2 | tr -d ' ')" = "256x256"
+          toml_version="$(sed -n 's/^versionNumber = "\([^"]*\)".*/\1/p' thunderstore.toml)"
+          test -n "$toml_version"
+          test "$toml_version" = "$(jq -r .version MortemChipX.json)"
+          grep -q "^## $toml_version\$" CHANGELOG.md
+      - name: Build the Thunderstore package
+        run: |
+          dotnet tool install -g tcli
+          scripts/stage.sh
+          tcli build
+      - name: Check the package
+        run: |
+          zip="$(ls build/*.zip)"
+          mkdir pkg && unzip -q "$zip" -d pkg
+          for f in manifest.json icon.png README.md CHANGELOG.md MortemChipX.json MortemChipX.lua \
+                   assets/1x/chip_jokers.png assets/2x/chip_jokers.png localization/en-us.lua; do
+            test -f "pkg/$f" || { echo "missing $f"; exit 1; }
+          done
+          test "$(file -b pkg/icon.png | cut -d, -f2 | tr -d ' ')" = "256x256"
+          test "$(jq -r .name pkg/manifest.json)" = "MortemChipX"
+          test "$(jq -r '.description | length <= 250' pkg/manifest.json)" = "true"
+          jq . pkg/manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thunderstore-package
+          path: build/*.zip

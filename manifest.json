@@ -1,9 +1,0 @@
-{
-  "name": "MortemChipX",
-  "version_number": "0.1.0",
-  "website_url": "https://github.com/MrMortem/MortemChipX",
-  "description": "Adds 9 new Jokers to Balatro that multiply your Chips.",
-  "dependencies": [
-    "Steamodded-Steamodded-26.1002.0"
-  ]
-}
